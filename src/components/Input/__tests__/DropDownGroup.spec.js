@@ -93,6 +93,13 @@ describe("DropDownGroup", () => {
     ).toMatchSnapshot();
   });
 
+  it("renders variant 2 with a label prop", () => {
+    expect(
+      renderTestComponentOne({ label: "Selected Option:", variant: 2 })
+        .container.firstChild
+    ).toMatchSnapshot();
+  });
+
   it("renders input correctly when the isOpen prop with a value of true is passed", () => {
     expect(
       renderTestComponentOne({ isOpen: true }).container.firstChild

@@ -574,6 +574,36 @@ span: 6
                 </DropDownGroup>
             </Column>
         </Row>
+        <Spacing top={{small: "normal"}} />
+        <Row >
+            <Column medium={4}>
+                <DropDownGroup size="small" variant={2} placeholder="Select an option" label="Label:">
+                    <DropDownOption value="0" index={0}>Option One</DropDownOption>
+                    <DropDownOption value="1" index={1}>Option Two</DropDownOption>
+                    <DropDownOption value="2" index={2}>Option Three</DropDownOption>
+                    <DropDownOption value="3" index={3}>Option Four</DropDownOption>
+                    <DropDownOption value="4" index={4}>Option Five</DropDownOption>
+                </DropDownGroup>
+            </Column>
+            <Column medium={4}>
+                <DropDownGroup variant={2} label="Label:">
+                    <DropDownOption value="0" index={0}>Option One</DropDownOption>
+                    <DropDownOption value="1" index={1}>Option Two</DropDownOption>
+                    <DropDownOption value="2" index={2}>Option Three</DropDownOption>
+                    <DropDownOption value="3" index={3}>Option Four</DropDownOption>
+                    <DropDownOption value="4" index={4}>Option Five</DropDownOption>
+                </DropDownGroup>
+            </Column>
+            <Column medium={4}>
+                <DropDownGroup value={["0"]} variant={2} label="Label:" disabled>
+                    <DropDownOption value="0" index={0}>Option One</DropDownOption>
+                    <DropDownOption value="1" index={1}>Option Two</DropDownOption>
+                    <DropDownOption value="2" index={2}>Option Three</DropDownOption>
+                    <DropDownOption value="3" index={3}>Option Four</DropDownOption>
+                    <DropDownOption value="4" index={4}>Option Five</DropDownOption>
+                </DropDownGroup>
+            </Column>
+        </Row>
     </Container>
 </ThemeProvider>
 ```

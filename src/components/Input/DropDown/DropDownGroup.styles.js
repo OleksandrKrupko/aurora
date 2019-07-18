@@ -219,3 +219,15 @@ export const StyledKeyboardProvider = styled(KeyBoardProvider)`
     opacity: 1;
   }
 `;
+
+export const StyledOuterLabel = styled.span`
+  font-size: ${typography.size.kilo};
+
+  &.dropdown--small {
+    font-size: ${typography.size.hecto};
+  }
+
+  &.dropdown--disabled {
+    opacity: 0.4;
+  }
+`;

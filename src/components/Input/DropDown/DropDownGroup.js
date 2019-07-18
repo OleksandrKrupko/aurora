@@ -14,6 +14,12 @@ import {
   ESCAPE,
   TAB
 } from "../../../utils/keyCharCodes";
+import { VARIANTS_WITH_LABEL_INSIDE, VARIANTS_WITH_BORDER } from "./constants";
+import {
+  VARIANTS_WITH_LABEL_INSIDE,
+  VARIANTS_WITH_BORDER,
+  LAYOUTS
+} from "./constants";
 import {
   StyledGroup,
   StyledChildWrapper,
@@ -21,8 +27,17 @@ import {
   StyledChevron,
   StyledSelectedText,
   StyledKeyboardProvider,
-  HiddenLabel
+  HiddenLabel,
+<<<<<<< HEAD
+  StyledOuterLabel
+=======
+<<<<<<< HEAD
+  StyledOuterLabel
+=======
+>>>>>>> feat(DropDownGroup): Add new layout variant
+>>>>>>> feat(DropDownGroup): Add new layout variant
 } from "./DropDownGroup.styles";
+import DropDownLabel from "./DropDownLabel";
 
 class DropDownGroup extends React.Component {
   componentDidMount() {
@@ -90,6 +105,22 @@ class DropDownGroup extends React.Component {
     return selectedItem && selectedItem.props.children;
   };
 
+  getOuterLabel = () => {
+    const { variant, label, size, disabled } = this.props;
+
+    return (
+      variant === 2 && (
+        <StyledOuterLabel
+          className={classNames(`dropdown--${size}`, {
+            "dropdown--disabled": disabled
+          })}
+        >
+          {label}
+        </StyledOuterLabel>
+      )
+    );
+  };
+
   closeDropdown = () => this.setState({ isOpen: false });
 
   openDropdown = () => this.setState({ isOpen: true });
@@ -114,13 +145,17 @@ class DropDownGroup extends React.Component {
   };
 
   displayLabel = selected => {
-    const { placeholder, label } = this.props;
+    const { placeholder, label, variant } = this.props;
 
     if (placeholder.length > 0 && selected.length === 0) {
       return placeholder;
     }
 
-    if (selected.length > 0 && label.length > 0) {
+    if (
+      VARIANTS_WITH_LABEL_INSIDE.includes(variant) &&
+      selected.length > 0 &&
+      label.length > 0
+    ) {
       return (
         <Fragment>
           {label} {this.getCurrentSelection(selected[0])}
@@ -169,6 +204,7 @@ class DropDownGroup extends React.Component {
     const onClickListener = disabled
       ? { onMouseDown: this.stopInteraction }
       : { onClick: this.onClick };
+    const isBorderAround = VARIANTS_WITH_BORDER.includes(variant);
 
     return (
       <SelectionProvider
@@ -191,74 +227,87 @@ class DropDownGroup extends React.Component {
                     state !== "exited" && !shouldOpenDownward;
 
                   return (
-                    <StyledGroupWrapper
-                      {...props}
-                      className={classNames(props.className, {
-                        "dropdown--open-upward": hasOpenUpwardClass,
-                        "dropdown--disabled": disabled
-                      })}
-                      tabIndex={disabled ? -1 : 0}
-                      aria-haspopup="listbox"
-                      aria-labelledby={hiddenLabelId}
-                      onKeyDown={this.onKeyDown}
-                      ref={this.groupWrapper}
-                    >
-                      <StyledGroup
-                        {...onClickListener}
-                        className={classNames(`dropdown--${size}`, {
-                          "dropdown--active": isOpen,
-                          "dropdown--border": variant === 0,
-                          "dropdown--no-border": variant === 1,
-                          "dropdown__label--disabled": disabled
+                    <Fragment>
+                      {variant === LAYOUTS.VARIANT2 && (
+                        <DropDownLabel size={size} disabled={disabled}>
+                          {label}
+                        </DropDownLabel>
+                      )}
+                      <StyledGroupWrapper
+                        {...props}
+                        className={classNames(props.className, {
+                          "dropdown--open-upward": hasOpenUpwardClass,
+                          "dropdown--disabled": disabled
                         })}
+                        tabIndex={disabled ? -1 : 0}
+                        aria-haspopup="listbox"
+                        aria-labelledby={hiddenLabelId}
+                        onKeyDown={this.onKeyDown}
+                        ref={this.groupWrapper}
                       >
-                        {/* HiddenLabel is required for correct screen readers 
-                          readings when an option is selected */}
-                        <HiddenLabel id={hiddenLabelId}>
-                          {placeholder || label}
-                        </HiddenLabel>
-                        <StyledSelectedText
-                          className={classNames({
-                            "dropdown__text--disabled": disabled
+                        <StyledGroup
+                          {...onClickListener}
+                          className={classNames(`dropdown--${size}`, {
+                            "dropdown--active": isOpen,
+                            "dropdown--border": isBorderAround,
+                            "dropdown--no-border": !isBorderAround,
+                            "dropdown__label--disabled": disabled
                           })}
                         >
-                          {this.displayLabel(selected)}
-                        </StyledSelectedText>
-
-                        <StyledChevron
-                          className={classNames({
-                            "dropdown__icon--hide": isOpen,
-                            "dropdown--no-border": variant === 1,
-                            "dropdown__chevron--disabled": disabled
-                          })}
-                        />
-                      </StyledGroup>
-                      <Transition in={isOpen} timeout={this.ANIMATION_TIMEOUT}>
-                        {wrapperState => (
-                          <StyledChildWrapper
-                            className={classNames(
-                              "dropdown__items",
-                              `dropdown__items--${size}`,
-                              {
-                                "dropdown--clicked": isOpen,
-                                "dropdown--overflow": wrapperState === "entered"
-                              }
-                            )}
-                            ref={this.styledChildWrapper}
+                          {/* HiddenLabel is required for correct screen readers 
+                          readings when an option is selected */}
+                          <HiddenLabel id={hiddenLabelId}>
+                            {placeholder || label}
+                          </HiddenLabel>
+                          <StyledSelectedText
+                            className={classNames({
+                              "dropdown__text--disabled": disabled
+                            })}
                           >
-                            <DropDownProvider value={{ ...this.state, isOpen }}>
-                              <StyledKeyboardProvider
-                                role="listbox"
-                                aria-labelledby={hiddenLabelId}
-                                {...keyboardProviderProps}
+                            {this.displayLabel(selected)}
+                          </StyledSelectedText>
+
+                          <StyledChevron
+                            className={classNames({
+                              "dropdown__icon--hide": isOpen,
+                              "dropdown--no-border": !isBorderAround,
+                              "dropdown__chevron--disabled": disabled
+                            })}
+                          />
+                        </StyledGroup>
+                        <Transition
+                          in={isOpen}
+                          timeout={this.ANIMATION_TIMEOUT}
+                        >
+                          {wrapperState => (
+                            <StyledChildWrapper
+                              className={classNames(
+                                "dropdown__items",
+                                `dropdown__items--${size}`,
+                                {
+                                  "dropdown--clicked": isOpen,
+                                  "dropdown--overflow":
+                                    wrapperState === "entered"
+                                }
+                              )}
+                              ref={this.styledChildWrapper}
+                            >
+                              <DropDownProvider
+                                value={{ ...this.state, isOpen }}
                               >
-                                {children}
-                              </StyledKeyboardProvider>
-                            </DropDownProvider>
-                          </StyledChildWrapper>
-                        )}
-                      </Transition>
-                    </StyledGroupWrapper>
+                                <StyledKeyboardProvider
+                                  role="listbox"
+                                  aria-labelledby={hiddenLabelId}
+                                  {...keyboardProviderProps}
+                                >
+                                  {children}
+                                </StyledKeyboardProvider>
+                              </DropDownProvider>
+                            </StyledChildWrapper>
+                          )}
+                        </Transition>
+                      </StyledGroupWrapper>
+                    </Fragment>
                   );
                 }}
               </Transition>
@@ -276,7 +325,7 @@ DropDownGroup.propTypes = {
   children: PropTypes.node.isRequired,
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
-  variant: PropTypes.number,
+  variant: PropTypes.oneOf(Object.values(LAYOUTS)),
   label: PropTypes.string,
   isOpen: PropTypes.bool,
   keywordSearch: PropTypes.bool,
@@ -291,7 +340,7 @@ DropDownGroup.defaultProps = {
   valueOverride: null,
   onChange: null,
   placeholder: "",
-  variant: 0,
+  variant: LAYOUTS.VARIANT0,
   isOpen: false,
   keywordSearch: true,
   withKeyboardProvider: true,
